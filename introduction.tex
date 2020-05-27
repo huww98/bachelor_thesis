@@ -25,7 +25,9 @@
 
 在编码器的构造上，之前的工作主要分为两类。 \citet{gnn19}提出使用图神经网络 (GNN) 编码数据库架构信息，另外使用LSTM\cite{lstm97}编码自然语言。IRNet\cite{irnet19}使用添加了大量注意力机制的LSTM分别编码自然语言和数据库架构。RAT-SQL\cite{ratsql19}在LSTM生成的表示基础上，使用具有关系感知的自注意力机制的Transformer\cite{attn17}对自然语言和数据库架构进行协同编码。在处理数据库架构中的主键、外键关系时： \citet{gnn19}将这些关系表示为有向图，并用GNN编码它；IRNet忽略了这些关系；而RAT-SQL用自注意力机制编码这些关系。在处理架构链接时：IRNet在输入中添加特殊的“链接类型”嵌入来表达； \citet{gnn19}基于词向量嵌入和一些手工构造的特征来计算自然语言中的单词和数据库列之间的相似度； \citet{gnn19}的后续工作Global-GNN\cite{ggcn19}将自然语言查询的语义信息引入GNN的初始化中；RAT-SQL则将链接关系使用同样的自注意力机制来编码。
 
-在解码器部分，近期的研究均使用了基于LSTM的解码器，主要有基于Token的解码和基于抽象语法树的解码。IRNet设计了一种比SQL抽象层次更高的语言。还有一些小的改进，如：由粗到细地解码\cite{irnet19,coarse-to-fine18}；使用记忆增强的指针网络以减少网络生成重复的内容；使用执行结果来指导解码\cite{wang2018execution-guided}，生成后进行额外的辨别步骤等\cite{ggcn19}。
+在解码器部分，部分研究使用模板填充的方式，将解码过程建模为多分类任务\cite{cao19,seq2sql17,sqlnet17}。
+但更多近期的研究将解码过程建模为序列生成任务，它们大多使用了基于LSTM的解码器，主要有基于Token的解码\cite{edit19}和基于抽象语法树的解码\cite{irnet19,gnn19,ggcn19,syntaxsqlnet18}。
+IRNet设计了一种比SQL抽象层次更高的语言。还有一些小的改进，如：由粗到细地解码\cite{irnet19,coarse-to-fine18}；使用记忆增强的指针网络以减少网络生成重复的内容；使用执行结果来指导解码\cite{wang2018execution-guided}，生成后进行额外的辨别步骤等\cite{ggcn19}。
 
 \section{论文结构}
 
