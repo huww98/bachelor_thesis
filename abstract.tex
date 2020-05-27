@@ -1,0 +1,13 @@
+\begin{abstractCN}
+关系型数据库在如今的各种系统中都是不可或缺的一部分。传统上，只有专业人员使用SQL语言与数据库直接交互。而数据库的自然语言接口技术旨在将自然语言表达的查询翻译为SQL语句，允许任何人更方便，更灵活地查询数据。随着基于神经网络的方法近年来在自然语言理解方面的巨大进步，数据库的自然语言接口技术也成为了可能。但还面临一些挑战：1. 如何快速迁移到训练时未曾见过的数据库架构上；2. 如何处理自然语言中的上下文信息；3. 如何有效地将语义信息编码为SQL语句。
+
+本文在现有方法地基础上，进行了一系列改造，并应用了其他研究中最新的预训练模型。特别地，本文提出了关系编码，帮助神经网络更好地理解数据库架构；提出了上下文编码，更好地利用自然语言中的上下文信息；以及提出了新的SQL生成方案，更加高效的生成准确的SQL语句。在最新的富有挑战性的SParC数据集上，相比之前问题完全匹配准确率为47.2\%的最好成绩，本文将其提升至了58.5\%，并大大简化了模型结构。
+\end{abstractCN}
+\keywordsCN{深度学习；自然语言处理；语义分析；SQL；自动编程}
+
+\begin{abstractEN}
+Relational databases are an indispensable part of today's various systems. Traditionally, only professionals can directly interact with databases using SQL language. The natural language interface of the database aims at translating queries expressed in natural language into SQL statements, allowing anyone to query data more conveniently and flexibly. With the tremendous progress of neural network-based methods in natural language understanding in recent years, the natural language interface of databases has also become possible. But some challenges still exists: 1. How to quickly migrate to a database schema that has not been seen during training; 2. How to deal with context information in natural language; 3. How to effectively encode semantic information into SQL statements.
+
+Based on the existing methods, this paper makes a few improvements, and merges in the newest pretrained model from previous research. Especially, this paper proposes relation encoding to help neural networks to better understand the database schema; context encoding is proposed to better use the context of natural language; and a new SQL decoding scheme is proposed to generate accurate SQL statements more efficiently. On the latest and challenging SParC dataset, this paper boosts the question exact match accuracy to 58.5\%, compared to 47.2\% for the previous state-of-the-art model, with a much-simplified model architecture.
+\end{abstractEN}
+\keywordsEN{Deep Learning, Natural Language Processing, Semantic Parsing, SQL, Automated programing}
