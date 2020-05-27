@@ -397,6 +397,7 @@
 
 %------------------
 \renewcommand{\maketitle}{% called outside
+  \pagenumbering{gobble}
   \ifpdfcover
 %%coverpage from pdf file
         \includepdf[pages=-]{thesis_cover.pdf}%pdf文件路径为主文件tex或lyx的当前目录
@@ -426,6 +427,7 @@
 \end{titlepage}
 
 \fi
+\cleardoublepage
 }
 %%摘要分中英文页，而且有两者排版方式：
 %一种是采用\abstractCN和\abstractEN方式以“摘要”和“Abstract”为页标题
