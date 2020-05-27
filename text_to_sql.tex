@@ -146,23 +146,23 @@
 
 上下文向量$\bm{c}_k$包含了解码器隐藏状态到自然语言、数据库架构中列的向量表示和上一次的SQL语句的注意力。解码器隐藏状态到数据库列的注意力可表示为：
 \begin{align}
-    \bm{s}_l&=\bm{W}_\mathrm{column-att}\bm{h}_k^D\cdot\bm{h}_l^\mathrm{C}\\
+    \bm{s}_l&=\bm{W}_\mathrm{column-att}\bm{h}_k^\mathrm{D}\cdot\bm{h}_l^\mathrm{C}\\
     \bm{\alpha}^\mathrm{column}&=\softmax\left(\bm{s}\right)\\
     \bm{c}_k^\mathrm{column}&=\sum_{l}{\bm{\alpha}_l^\mathrm{column}\times\bm{h}_l^\mathrm{C}}
 \end{align}
 
 其中，$\bm{h}_l^\mathrm{C}$为数据库中第$l$列的向量表示。解码器隐藏状态到自然语言的注意力可表示为：
 \begin{align}
-    \bm{s}_i=\bm{W}_\mathrm{utterance-att}\bm{h}_k^\mathrm{D}\cdot\bm{h}_i^\mathrm{E}\\
-    \bm{\alpha}^\mathrm{utterance}=\softmax\left(\bm{s}\right)\\
-    \bm{c}_k^\mathrm{utterance}=\sum_{i}{\bm{\alpha}_i^\mathrm{utterance}\times\bm{h}_i^\mathrm{E}}
+    \bm{s}_i&=\bm{W}_\mathrm{utterance-att}\bm{h}_k^\mathrm{D}\cdot\bm{h}_i^\mathrm{E}\\
+    \bm{\alpha}^\mathrm{utterance}&=\softmax\left(\bm{s}\right)\\
+    \bm{c}_k^\mathrm{utterance}&=\sum_{i}{\bm{\alpha}_i^\mathrm{utterance}\times\bm{h}_i^\mathrm{E}}
 \end{align}
 
 其中$\bm{h}_i^\mathrm{E}$为拼接后的当前和历史记录中的自然语言查询中的第i个单词的向量表示。类似地，解码器隐藏状态到上一次的SQL语句的注意力可表示为：
 \begin{align}
-    \bm{s}_i=\bm{W}_\mathrm{query-att}\bm{h}_k^\mathrm{D}\cdot\bm{h}_i^\mathrm{Q}\\
-    \bm{\alpha}^\mathrm{query}=\softmax\left(\bm{s}\right)\\
-    \bm{c}_k^\mathrm{query}=\sum_{i}{\bm{\alpha}_i^\mathrm{query}\times\bm{h}_{t-1,i}^\mathrm{Q}}
+    \bm{s}_i&=\bm{W}_\mathrm{query-att}\bm{h}_k^\mathrm{D}\cdot\bm{h}_i^\mathrm{Q}\\
+    \bm{\alpha}^\mathrm{query}&=\softmax\left(\bm{s}\right)\\
+    \bm{c}_k^\mathrm{query}&=\sum_{i}{\bm{\alpha}_i^\mathrm{query}\times\bm{h}_{t-1,i}^\mathrm{Q}}
 \end{align}
 
 其中，$\bm{h}_{t-1,i}^\mathrm{Q}$表示上一个SQL语句中的第i个标记的向量表示。这个表示是由另一个LSTM编码得到的，上下文向量是由上述三者连接在一起得到：
