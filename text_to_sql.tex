@@ -76,7 +76,7 @@
 
 本文提出的关系编码机制在思想上类似于RAT-SQL\cite{ratsql19}中使用的“关系感知的自注意力” (relation-aware self-attention) 机制，但在具体的做法上有所差异。特别地，本文将该机制融合到了预训练的编码器中。以XLNet为例，下面介绍该机制的具体做法：
 
-关系编码发生在编码器的自注意力层。在通常的理解中，每个自注意力头编码了一种学习到的关系，关系的强度被编码在注意力权重$\alpha_{i,j}^{\left(h\right)}$中。XLNet中的自注意力层使用了“相对位置嵌入”(relative positional embedding) 机制，用以代替最初Transformer中提出的位置嵌入。该机制将公式2-1和2-2替换为：
+关系编码发生在编码器的自注意力层。在通常的理解中，每个自注意力头编码了一种学习到的关系，关系的强度被编码在注意力权重$\alpha_{i,j}^{\left(h\right)}$中。XLNet中的自注意力层使用了“相对位置嵌入”(relative positional embedding) 机制，用以代替最初Transformer中提出的位置嵌入。该机制将公式\ref{attn-forward:1}和\ref{attn-forward:2}替换为：
 \begin{equation}
     \alpha_{i,j}^{(h)}=
         \left(\bm{W}_Q^{(h)}\bm{x}_i\right)^T\bm{W}_{k,E}^{(h)}\bm{x}_j+

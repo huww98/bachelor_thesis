@@ -1,6 +1,6 @@
 \chapter{神经网络的基础知识}
 
-\section{神经网络的运行原理}
+\section{神经网络的运行原理} \label{nn-principal}
 
 本节中将以最基本的全连接前馈神经网络为例，介绍神经网络的基本运行原理。
 
@@ -8,7 +8,7 @@
 
 神经网络模型的开发过程一般是，搭建模型的结构，然后反复运行前向传播，反向传播，优化这三个步骤，直至收敛。
 
-\subsection{前向传播}
+\subsection{前向传播} \label{nn-forward}
 
 \begin{figure}[]
     \centering
@@ -18,7 +18,6 @@
 \end{figure}
 
 如图\ref{nunit}所示，神经元是全连接前馈神经网络的基本单元。每个神经元接收若干个信号输入，经过与神经元的权重连接（线性变换）和激活函数（非线性变换）之后，输出一个新的信号。具体来说，神经元接受一个N维向量$\bm{x}\in\mathbb{R}^N$作为输入，则其输出为：
-
 \begin{equation}
     z=\sigma\left(\bm{W}\bm{x}+b\right)
 \end{equation}
@@ -26,7 +25,6 @@
 其中$\bm{W}\in\mathbb{R}^N$是该神经元连接的权重，是可学习的参数。$b$是可选的偏置项，也是可学习的参数，$\sigma$是非线性激活函数。
 
 $M$个接受相同输入的神经元构成了一层神经网络，每个神经元具有不同的可学习参数。则一层神经网络的运行也可以表示为：
-
 \begin{equation}
     \bm{z}=\sigma\left(\bm{W}\bm{x}+\bm{b}\right)
 \end{equation}
@@ -41,7 +39,6 @@ $M$个接受相同输入的神经元构成了一层神经网络，每个神经�
 \end{figure}
 
 通常神经网络会由至少三层神经元构成。如图\ref{nnet}所示，第一层称为输入层，其输入是原始的特征向量，最后一层称为输出层，其输出为模型最终的输出，其余的则称为隐藏层，将上一层的输出作为输入，自己的输出则作为下一层的输入。每一层的神经元的数量可以不同。但上一层的神经元数量应和下一层的输入向量的长度是一致的。对于有L层的神经网络来说，若$\bm{x}^0$为表示原始特征的向量，则第l层的输出可以表示为：
-
 \begin{equation}
     \bm{x}^l=\sigma\left(\bm{W}^l\bm{x}^{l-1}+\bm{b}^l\right),l\in\left\{1,2,\ldots,L\right\}
 \end{equation}
@@ -56,7 +53,6 @@ $\bm{x}^L$即为网络最终的输出。
 \end{figure}
 
 对于激活函数，理论上它可以是任何连续的非线性函数。若没有激活函数，则整个网络将只有线性变换，无论使用多复杂的结构，输出也只能是输入向量的线性变换，其表达能力十分有限。常用的激活函数有ReLU，tanh，sigmoid等。如图\ref{act-func}所示，以下是它们的定义：
-
 \begin{align}
     \mathrm{ReLU}\left(x\right)&=\max{\left(x,0\right)}\\
     \tanh{\left(x\right)}&=\frac{e^x-e^{-x}}{e^x+e^{-x}}\\
@@ -68,14 +64,12 @@ $\bm{x}^L$即为网络最终的输出。
 \subsection{反向传播}
 
 反向传播的目的是为网络中的每一个可学习的参数计算一个梯度，当将这些参数的数值向梯度的相反方向移动的时候，我们期望模型在下一次迭代的时候可以做得更好，得出更加正确的结果。为了得到这样的梯度，我们需要一个函数，对模型的输出进行评价，其函数值越小，则代表模型在该任务上的表现越好。这样的函数称作损失函数 (loss function)。我们所期望求得的梯度就是损失函数的梯度了。根据任务的不同，我们会设计不同的损失函数。以之前提到的图片分类任务为例，最常用的损失函数为交叉熵 (cross entropy) 损失函数，其针对单个输入样本的定义为：
-
 \begin{equation}
     \mathrm{CE}\left(\bm{x},y\right)=-\log{\left(\frac{\exp{\left(\bm{x}_y\right)}}{\sum_{j=1}^{N}\exp{\left(\bm{x}_j\right)}}\right)}
 \end{equation}
 
 其中$N$为分类的数量，$\bm{x}\in\mathbb{R}^N$为模型输出的各个分类的得分，$y$为正确的分类的下标。正确的分类的得分越高，其他分类的得分越低，该函数的函数值就越小，越趋近于0。
-下面以2.1.1节介绍的全连接前馈神经网络中的参数$\bm{W}^l$为例，介绍反向传播的计算过程。其基本思路是函数的链式求导法则。具体来说，我们所要求的梯度是：
-
+下面以\ref{nn-forward}节介绍的全连接前馈神经网络中的参数$\bm{W}^l$为例，介绍反向传播的计算过程。其基本思路是函数的链式求导法则。具体来说，我们所要求的梯度是：
 \begin{equation}
     \nabla\bm{W}^l=\frac{\partial J\left(\cdot\right)}{\partial\bm{W}^l}
 \end{equation}
@@ -116,7 +110,7 @@ $\bm{x}^L$即为网络最终的输出。
 
 \section{循环神经网络 (RNN)}
 
-2.1节中描述的全连接前馈神经网络只能处理固定长度的特征。这对于例如图片等数据是没有问题的，图片总是能采样到任何希望的大小。然而对于例如自然语言的输入来说，每次输入的长度都是不一样的，神经网络需要有一种机制来处理变长的输入。循环神经网络就应运而生了。
+\ref{nn-principal}节中描述的全连接前馈神经网络只能处理固定长度的特征。这对于例如图片等数据是没有问题的，图片总是能采样到任何希望的大小。然而对于例如自然语言的输入来说，每次输入的长度都是不一样的，神经网络需要有一种机制来处理变长的输入。循环神经网络就应运而生了。
 
 循环神经网络的输入$\bm{X}=\left\{\bm{x}_1,\bm{x}_2,\ldots,\bm{x}_N\right\}$为长度为$N$的序列，序列中每个元素为一个表示该元素特征的向量，其输出$\bm{Y}=\left\{\bm{y}_1,\bm{y}_2,\ldots,\bm{y}_N\right\}$也是长度为$N$的序列。$N$可以随时改变。以自然语言的文本数据为例，语句中的每个单词可以作为输入序列中的一个元素，其向量表示可以来自预先训练的表示，也可以随机初始化词嵌入向量，并将其随模型一起训练。
 
@@ -129,7 +123,7 @@ $\bm{x}^L$即为网络最终的输出。
     \label{vanilla-rnn}
 \end{figure}
 
-如图\ref{vanilla-rnn}所示，Vanilla RNN 的前向传播过程与2.1节中描述的全连接前馈神经网络有相似之处，它的前向传播算法如下：
+如图\ref{vanilla-rnn}所示，Vanilla RNN 的前向传播过程与\ref{nn-principal}节中描述的全连接前馈神经网络有相似之处，它的前向传播算法如下：
 \begin{align}
     \bm{h}_t&=\sigma\left(\bm{W}_{hx}\bm{x}_t+\bm{W}_{hh}\bm{h}_{t-1}+\bm{b}_h\right)\\
     \bm{y}_t&=\bm{W}_{yh}\bm{h}_t+\bm{b}_y
@@ -177,10 +171,10 @@ $\bm{x}^L$即为网络最终的输出。
 
 如图\ref{attn}所示，缩放后的多头注意力机制是Transformer模型的核心组件，它可以建模任意长度的序列中元素间的关系，允许每个元素在编码过程中访问与自己有关的上下文。这里仅介绍自注意力机制，用于解码的交叉注意力则不做介绍。$\bm{x}$为注意力力机制的输入，$\bm{z}$为输出，其前向传播过程可以表示为：
 \begin{align}
-    e_{ij}^{\left(h\right)}&=\frac{\left(\bm{W}_Q^{\left(h\right)}\bm{x}_i\right)^T\bm{W}_k^{\left(h\right)}\bm{x}_j}{\sqrt{d_z/H}}\\
-    \alpha_{ij}^{\left(h\right)}&=\frac{\exp{\left(e_{ij}^{\left(h\right)}\right)}}{\sum_{l=1}^{n}\exp{\left(e_{il}^{\left(h\right)}\right)}}\\
+    e_{ij}^{\left(h\right)}&=\frac{\left(\bm{W}_Q^{\left(h\right)}\bm{x}_i\right)^T\bm{W}_k^{\left(h\right)}\bm{x}_j}{\sqrt{d_z/H}} \label{attn-forward:1}\\
+    \alpha_{ij}^{\left(h\right)}&=\frac{\exp{\left(e_{ij}^{\left(h\right)}\right)}}{\sum_{l=1}^{n}\exp{\left(e_{il}^{\left(h\right)}\right)}} \label{attn-forward:2}\\
     \bm{z}_i^{\left(h\right)}&=\sum_{j=1}^{n}{\alpha_{ij}^{\left(h\right)}\left(\bm{W}_V^{\left(h\right)}\bm{x}_j\right)}\\
-    \bm{z}_i&=\mathrm{Concat}\left(\bm{z}_i^{\left(1\right)},\ldots,\bm{z}_i^{\left(H\right)}\right)
+    \bm{z}_i&=\mathrm{Concat}\left(\bm{z}_i^{\left(1\right)},\ldots,\bm{z}_i^{\left(H\right)}\right)  \label{attn-forward:4}
 \end{align}
 
 其中H为注意力头的数量，$\bm{W}$是可学习的权重，$\alpha_{ij}$又称作注意力权重，它编码了第$i$个元素到第$j$个元素的关系紧密程度，具有较强的可解释性。
@@ -194,13 +188,14 @@ $\bm{x}^L$即为网络最终的输出。
     \label{trans-enc}
 \end{figure}
 
-如图\ref{trans-enc}所示，建立在自注意力机制之上，Transformer编码器交替使用了自注意力层和前馈网络层，并使用了归一化和残差连接。$\bm{y}$表示单层编码器的输出，与公式2-1到2-4一起，其前向传播过程可表示为：
+如图\ref{trans-enc}所示，建立在自注意力机制之上，Transformer编码器交替使用了自注意力层和前馈网络层，并使用了归一化和残差连接。$\bm{y}$表示单层编码器的输出，与公式\ref{attn-forward:1}到\ref{attn-forward:4}一起，其前向传播过程可表示为：
+\def\LN{\mathrm{LayerNorm}}
 \begin{align}
-{\widetilde{\bm{y}}}_i&=LayerNorm\left(\bm{x}_i+\bm{z}_i\right)\\
-\bm{y}_i&=LayerNorm\left({\widetilde{\bm{y}}}_i+\bm{W}_2\left(ReLU\left(\bm{W}_1{\widetilde{\bm{y}}}_i\right)\right)\right.
+{\widetilde{\bm{y}}}_i&=\LN\left(\bm{x}_i+\bm{z}_i\right)\\
+\bm{y}_i&=\LN\left({\widetilde{\bm{y}}}_i+\bm{W}_2\left(ReLU\left(\bm{W}_1{\widetilde{\bm{y}}}_i\right)\right)\right.
 \end{align}
 
-其中$\bm{W}$可学习的是参数，LayerNorm表示层归一化\cite{LayerN16}。$N$个这样的层叠加在一起组成了Transformer的编码器。可以发现，自注意力机制并不能捕获序列中元素的位置信息，而前馈网络层是对每个元素单独运算的，也不能捕获位置信息。因此，Transformer将输入序列中元素的位置信息进行嵌入，并叠加在了首层的输入上。
+其中$\bm{W}$可学习的是参数，$\LN$表示层归一化\cite{LayerN16}。$N$个这样的层叠加在一起组成了Transformer的编码器。可以发现，自注意力机制并不能捕获序列中元素的位置信息，而前馈网络层是对每个元素单独运算的，也不能捕获位置信息。因此，Transformer将输入序列中元素的位置信息进行嵌入，并叠加在了首层的输入上。
 
 \section{其他神经网络构建单元}
 
