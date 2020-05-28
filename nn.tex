@@ -10,11 +10,18 @@
 
 \subsection{前向传播} \label{nn-forward}
 
-\begin{figure}[]
+\begin{figure}
     \centering
-    \includegraphics[page=1]{figure/figures.pdf}
-    \caption{神经元示意图}
-    \label{nunit}
+    \begin{minipage}[b]{0.48\linewidth}
+        \includegraphics[page=1,width=0.9\linewidth]{figure/figures.pdf}
+        \caption{神经元示意图}
+        \label{nunit}
+    \end{minipage}
+    \begin{minipage}[b]{0.48\linewidth}
+        \includegraphics[page=2,width=0.9\linewidth]{figure/figures.pdf}
+        \caption{神经网络示意图}
+        \label{nnet}
+    \end{minipage}
 \end{figure}
 
 如图\ref{nunit}所示，神经元是全连接前馈神经网络的基本单元。每个神经元接收若干个信号输入，经过与神经元的权重连接（线性变换）和激活函数（非线性变换）之后，输出一个新的信号。具体来说，神经元接受一个N维向量$\bm{x}\in\mathbb{R}^N$作为输入，则其输出为：
@@ -31,13 +38,6 @@ $M$个接受相同输入的神经元构成了一层神经网络，每个神经�
 
 其中$\bm{W}\in\mathbb{R}^{M\times N}$是该层所有神经元的连接的权重，$\bm{b}\in\mathbb{R}^M$是该层所有神经元的偏置项。$\bm{z}\in\mathbb{R}^M$是该层所有神经元的输出，它可能是模型最后的输出，也可能是下一层神经元的输入。
 
-\begin{figure}[]
-    \centering
-    \includegraphics[page=2]{figure/figures.pdf}
-    \caption{神经网络示意图}
-    \label{nnet}
-\end{figure}
-
 通常神经网络会由至少三层神经元构成。如图\ref{nnet}所示，第一层称为输入层，其输入是原始的特征向量，最后一层称为输出层，其输出为模型最终的输出，其余的则称为隐藏层，将上一层的输出作为输入，自己的输出则作为下一层的输入。每一层的神经元的数量可以不同。但上一层的神经元数量应和下一层的输入向量的长度是一致的。对于有L层的神经网络来说，若$\bm{x}^0$为表示原始特征的向量，则第l层的输出可以表示为：
 \begin{equation}
     \bm{x}^l=\sigma\left(\bm{W}^l\bm{x}^{l-1}+\bm{b}^l\right),l\in\left\{1,2,\ldots,L\right\}
@@ -45,7 +45,7 @@ $M$个接受相同输入的神经元构成了一层神经网络，每个神经�
 
 $\bm{x}^L$即为网络最终的输出。
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics{figure/act.pdf}
     \caption{激活函数}
@@ -116,12 +116,12 @@ $\bm{x}^L$即为网络最终的输出。
 
 \subsection{Vanilla RNN}
 
-\begin{figure}[]
+\begin{wrapfigure}{R}{0.4\linewidth}
     \centering
-    \includegraphics[page=3]{figure/figures.pdf}
+    \includegraphics[page=3,width=\linewidth]{figure/figures.pdf}
     \caption{Vanilla RNN单元}
     \label{vanilla-rnn}
-\end{figure}
+\end{wrapfigure}
 
 如图\ref{vanilla-rnn}所示，Vanilla RNN 的前向传播过程与\ref{nn-principal}节中描述的全连接前馈神经网络有相似之处，它的前向传播算法如下：
 \begin{align}
@@ -135,7 +135,7 @@ $\bm{x}^L$即为网络最终的输出。
 
 \subsection{LSTM}
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics[page=4,width=\linewidth]{figure/figures.pdf}
     \caption{LSTM单元}
@@ -162,7 +162,7 @@ $\bm{x}^L$即为网络最终的输出。
 
 \subsection{注意力机制}
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics[width=\linewidth]{figure/scaled_multiheaded_attn.png}
     \caption{缩放后的多头注意力机制示意图\cite{attn17}}
@@ -181,18 +181,18 @@ $\bm{x}^L$即为网络最终的输出。
 
 \subsection{Transformer编码器}
 
-\begin{figure}[]
+\begin{wrapfigure}{R}{0.4\linewidth}
     \centering
-    \includegraphics[page=5]{figure/figures.pdf}
+    \includegraphics[page=5,width=\linewidth]{figure/figures.pdf}
     \caption{Transformer编码器示意图\cite{attn17}}
     \label{trans-enc}
-\end{figure}
+\end{wrapfigure}
 
 如图\ref{trans-enc}所示，建立在自注意力机制之上，Transformer编码器交替使用了自注意力层和前馈网络层，并使用了归一化和残差连接。$\bm{y}$表示单层编码器的输出，与公式\ref{attn-forward:1}到\ref{attn-forward:4}一起，其前向传播过程可表示为：
 \def\LN{\mathrm{LayerNorm}}
 \begin{align}
 {\widetilde{\bm{y}}}_i&=\LN\left(\bm{x}_i+\bm{z}_i\right)\\
-\bm{y}_i&=\LN\left({\widetilde{\bm{y}}}_i+\bm{W}_2\left(ReLU\left(\bm{W}_1{\widetilde{\bm{y}}}_i\right)\right)\right.
+\bm{y}_i&=\LN\left({\widetilde{\bm{y}}}_i+\bm{W}_2\left(\mathrm{ReLU}\left(\bm{W}_1{\widetilde{\bm{y}}}_i\right)\right)\right.
 \end{align}
 
 其中$\bm{W}$可学习的是参数，$\LN$表示层归一化\cite{LayerN16}。$N$个这样的层叠加在一起组成了Transformer的编码器。可以发现，自注意力机制并不能捕获序列中元素的位置信息，而前馈网络层是对每个元素单独运算的，也不能捕获位置信息。因此，Transformer将输入序列中元素的位置信息进行嵌入，并叠加在了首层的输入上。

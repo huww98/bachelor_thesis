@@ -1,6 +1,6 @@
 \chapter{自然语言到SQL转换方案设计}
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics[page=6,width=\linewidth]{figure/figures.pdf}
     \caption{模型整体架构}
@@ -26,7 +26,7 @@
     \item 根据外键关系，将数据库中的所有表构造成无向图，并使用Kruskal算法求解包含当前FROM子句中的表的最小生成树，根据生成树的边来重建JOIN子句中的ON部分。该步骤也有可能会添加新的表至FROM子句中，例如用于多对多关联的表。构建最小生成树也可能失败，例如数据库架构的外键约束不完整时。若构建失败，则跳过重建JOIN子句ON部分。
 \end{enumerate}
 
-\begin{table}[]
+\begin{table}
     \def\sql#1{\texttt{#1}}
     \def\kw#1{\textcolor{blue}{#1}}
     \def\SELECT{\kw{SELECT }}
@@ -57,7 +57,7 @@
 
 编码器的构建是基于大型预训练注意力神经网络，如BERT\cite{bert19}和XLNet\cite{XLNet19}等。本文在之前工作的基础上增加了关系编码机制和上下文编码机制。
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics[page=7,width=\linewidth]{figure/figures.pdf}
     \caption{编码器架构}
@@ -99,7 +99,7 @@
         \bm{t}^T\bm{W}_{k,R}^{(h)}\bm{T}_{ij}
 \end{equation}
 
-\begin{table}[]
+\begin{table}
     \begin{tabularx}{\linewidth}{ll|l|l}
     \hline
     x类型 & y类型 & 关系类型              & 描述                 \\ \hline

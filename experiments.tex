@@ -8,7 +8,7 @@
 
 目前SParC数据集上的工作较少。本文主要与EditSQL进行比较，这是截至2020年5月20日已发布论文的模型中效果最好的。与所有提交的模型相比，其排名也很靠前。本文使用了与其相同的解码器算法，但在其他诸多方面做出了改进。EditSQL在编码器方面，使用了多层的LSTM。为了解决跨领域问题，它设计了较为复杂的自然语言和数据库架构间的交叉注意力机制。另外，它使用了独立的交互编码器和交互注意力机制来处理自然语言上下文的问题。
 
-此外，本文也与SParC\cite{sparc19}中发布的两个基线模型进行比较：上下文相关的序列到序列模型 (Context-dependent Seq2Seq) ，它在原始的为ATIS数据集开发的模型基础上新增了使用Bi-LSTM编码数据库架构的能力，和解码未在训练中见过的数据库架构的能力，以适应跨领域的任务。以及SyntaxSQL-con模型，它在原始的为Spider数据集开发的SyntaxSQL\cite{yu-etal-2018-syntaxsqlnet}模型的基础上增加了Bi-LSTM编码交互历史记录的能力，以适应多轮交互的任务。
+此外，本文也与SParC\cite{sparc19}中发布的两个基线模型进行比较：上下文相关的序列到序列模型 (Context-dependent Seq2Seq) ，它在原始的为ATIS数据集开发的模型基础上新增了使用Bi-LSTM编码数据库架构的能力，和解码未在训练中见过的数据库架构的能力，以适应跨领域的任务。以及SyntaxSQL-con模型，它在原始的为Spider数据集开发的SyntaxSQL\cite{syntaxsqlnet18}模型的基础上增加了Bi-LSTM编码交互历史记录的能力，以适应多轮交互的任务。
 
 \section{实现细节}
 
@@ -16,7 +16,7 @@
 
 \section{总体结果}
 
-\begin{table}[]
+\begin{table}
     \centering
     \caption{SParC实验总体结果}
     \begin{tabular}{l|rr}
@@ -39,7 +39,7 @@
 
 为了更公平地与基线方法比较，本文也报告了基于BERT模型的结果。但使用更新的XLNet预训练模型有以下好处：1. XLNet使用更大的预料库，其预训练方法也有较大不同，它或许能生成更好的向量表示；2. BERT由于使用预训练的位置嵌入，其位置嵌入最大值为512，将无法完整容纳较大的数据库架构。之前的工作通过将数据库架构在批维度拆分以解决该问题。本文放弃对数据库架构部分使用位置嵌入，转而完全依赖关系编码机制，从而绕过了这个限制，使得BERT的表现略有提升。而XLNet对输入序列的长度没有限制，所以没有类似的问题。从最终结果看，XLNet也取得了更佳的结果。
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics[width=\linewidth]{figure/overall.pdf}
     \caption{SParC实验结果按照交互回合和难度细分。EditSQL使用BERT版本，本文的模型使用XLNet的版本。}
@@ -65,7 +65,7 @@ EditSQL也进行了SQL预处理，但没有对此进行讨论。EditSQL的预处
     \item SELECT提示：去除整个FROM子句，但将未在SQL其他部分引用的表以特殊标记的形式添加到SELECT子句中。
 \end{itemize}
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics{figure/preprocess.pdf}
     \caption{各种预处理方案对比。在EditSQL的基础上实验不同的预处理方案。图中误差线展示了基于7次实验估计的95\%置信区间}
@@ -76,7 +76,7 @@ EditSQL也进行了SQL预处理，但没有对此进行讨论。EditSQL的预处
 
 \subsection{上下文编码机制效果}
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics{figure/prefix.pdf}
     \caption{上下文编码消融实验结果，按交互回合细分}
@@ -87,7 +87,7 @@ EditSQL也进行了SQL预处理，但没有对此进行讨论。EditSQL的预处
 
 \subsection{关系编码机制效果}
 
-\begin{table}[]
+\begin{table}
     \centering
     \caption{消融实验结果}
     \begin{tabular}{l|rr}
@@ -104,7 +104,7 @@ EditSQL也进行了SQL预处理，但没有对此进行讨论。EditSQL的预处
 
 \section{错误分析}
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \includegraphics{figure/error.pdf}
     \caption{预测错误分析}
