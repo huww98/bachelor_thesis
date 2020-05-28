@@ -19,8 +19,8 @@
 \begin{table}[]
     \centering
     \caption{SParC实验总体结果}
-    \begin{tabular}{lrr}
-    \hline
+    \begin{tabular}{l|rr}
+    \hline\hline
                         & 问题准确率 & 交互准确率 \\ \hline
     SyntaxSQL-con       & 18.5  & 4.3   \\
     CD-Seq2Seq          & 21.9  & 8.1   \\
@@ -30,7 +30,7 @@
     \multicolumn{3}{l}{使用标注的历史SQL查询}    \\ \hline
     EditSQL with   BERT & 53.4  & 29.2  \\
     本文模型 with BERT      & 60.7  & 34.6  \\
-    本文模型 with XLNet     & \textbf{64.3}  & \textbf{39.3}  \\ \hline
+    本文模型 with XLNet     & \textbf{64.3}  & \textbf{39.3}  \\ \hline\hline
     \end{tabular}
     \label{overall-results}
 \end{table}
@@ -90,12 +90,12 @@ EditSQL也进行了SQL预处理，但没有对此进行讨论。EditSQL的预处
 \begin{table}[]
     \centering
     \caption{消融实验结果}
-    \begin{tabular}{lrr}
-    \hline
+    \begin{tabular}{l|rr}
+    \hline\hline
             & 问题准确率 & 交互准确率 \\ \hline
     本文模型    & 58.5  & 39.6  \\
     - 上下文编码 & 54.2  & 33.9  \\
-    - 关系编码  & 57.1  & 38.9  \\ \hline
+    - 关系编码  & 57.1  & 38.9  \\ \hline\hline
     \end{tabular}
     \label{ablation-results}
 \end{table}
