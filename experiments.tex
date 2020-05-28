@@ -76,12 +76,12 @@ EditSQL也进行了SQL预处理，但没有对此进行讨论。EditSQL的预处
 
 \subsection{上下文编码机制效果}
 
-\begin{figure}
+\begin{wrapfigure}{R}{0.6\linewidth}
     \centering
-    \includegraphics{figure/prefix.pdf}
+    \includegraphics[width=\linewidth]{figure/prefix.pdf}
     \caption{上下文编码消融实验结果，按交互回合细分}
     \label{context-results}
-\end{figure}
+\end{wrapfigure}
 
 本文对上下文编码机制的效果进行了消融实验，表\ref{ablation-results}展示了实验结果。此外，将本文提出的上下文编码机制和EditSQL中使用的“交互编码器”进行对比，并将指标按照交互轮数细分展示，如图\ref{context-results}所示。上下文编码机制能帮助网络更好地理解自然语言的上下文信息。整体上，上下文编码机制使准确率提升了4.3\%。其提高在于第二回合及以后的交互中，也就是所有需要处理上下文信息的回合。
 
@@ -104,12 +104,12 @@ EditSQL也进行了SQL预处理，但没有对此进行讨论。EditSQL的预处
 
 \section{错误分析}
 
-\begin{figure}
+\begin{wrapfigure}{R}{0.6\linewidth}
     \centering
-    \includegraphics{figure/error.pdf}
+    \includegraphics[width=\linewidth]{figure/error.pdf}
     \caption{预测错误分析}
     \label{error}
-\end{figure}
+\end{wrapfigure}
 
 本文对模型预测错误的语句进行了分析，具体方法是将预测的SQL语句和标注的SQL语句分别转换成抽象语法树，并对语句的各个部分进行对比，结果如图\ref{error}所示。尽管在解码时没有使用SQL的语法进行约束，解码的结果只有很少量的语法错误，其中大多数是括号不匹配等错误。这可能说明模型对SQL的语法已经能较好地掌握了。对于包含组合和子查询的复杂语句模型还较难处理，模型仅正确预测出了39个组合结构中的7个（18\%），和75子查询结构中的42个（56\%）。鉴于巨大的搜索空间和很少的训练数据，这是可以理解的。但测试数据较少，所以这类错误总量也较少。绝大多数错误都来自单个子查询内的错误。其中较高层次的骨架错误和较低层次的列选择错误都有较高的比例，这意味着对于未来的研究来说，各个层次都是很重要的。由于本文特别对FROM子句部分进行了预处理，所以也特别分析了FROM子句的错误情况。在经过预处理之后，相对来说，FROM子句造成的错误是比较少的。
 
