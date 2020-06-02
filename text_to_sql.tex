@@ -27,23 +27,13 @@
 \end{enumerate}
 
 \begin{table}
-    \def\sql#1{\texttt{#1}}
-    \def\kw#1{\textcolor{blue}{#1}}
-    \def\SELECT{\kw{SELECT }}
-    \def\FROM{\kw{FROM }}
-    \def\JOIN{\kw{JOIN }}
-    \def\AS{\kw{AS }}
-    \def\ON{\kw{ON }}
+    \input{sql/def.tex}
 
     \begin{tabularx}{\textwidth}{l|X}
     \hline
     自然语言查询 & Who are all the party hosts?…\newline Show the themes of parties they host along with their name.\\ \hline
-    原SQL语句 &
-    \sql{\SELECT T3.Party\_Theme, T2.Name \FROM party\_host \AS T1 \newline
-        \-\hspace{2em} \JOIN host \AS T2 \ON T1.Host\_ID = T2.Host\_ID \newline
-        \-\hspace{2em} \JOIN party \AS T3 \ON T1.Party\_ID = T3.Party\_ID} \\ \hline
-    预处理后SQL语句 &
-    \sql{\SELECT party.Party\_Theme, host.Name} \\ \hline
+    原SQL语句 & \input{sql/before.tex} \\ \hline
+    预处理后SQL语句 & \input{sql/after.tex} \\ \hline
     \end{tabularx}
     \caption{SQL预处理。party\_host是多对多关联表，host和party表均在SELECT子句中被引用过，所以整个FROM子句全部被去除。}
     \label{preprocess-eg}

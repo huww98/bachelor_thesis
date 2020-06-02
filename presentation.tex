@@ -1,5 +1,6 @@
 \documentclass{ctexbeamer}
 \usetheme{Madrid}
+\setmainfont{Times New Roman}
 \setCJKsansfont{宋体}
 
 \title[数据库的自然语言接口]{数据库的自然语言接口关键技术研究}
@@ -18,6 +19,9 @@
 
 \begin{document}
 \frame{\titlepage}
+\logo{}
+
+\input{sql/def.tex}
 
 \begin{frame}
   \frametitle{目录}
@@ -36,14 +40,77 @@
 \end{frame}
 
 \section{提出的方法}
+\begin{frame}
+  \frametitle{整体架构}
+  \begin{figure}
+    \includegraphics[page=6,width=\linewidth]{figure/figures.pdf}
+    \caption{模型整体架构}
+  \end{figure}
+\end{frame}
+
 \subsection{SQL预处理和后处理}
 \begin{frame}
   \frametitle{SQL预处理和后处理}
+  \begin{itemize}
+    \item SQL中包含冗余的，抽象层次低的结构，将显著影响模型预测的准确率
+    \item EditSQL的方案为去除SQL中最为冗余的FROM子句
+  \end{itemize}
+  \begin{example}
+    Who are all the party hosts?…\\
+    Show the themes of parties they host along with their name.
+
+    \vspace{0.2cm}
+    \input{sql/before.tex}
+  \end{example}
+\end{frame}
+\begin{frame}
+  \frametitle{SQL预处理和后处理}
+  \framesubtitle{本文方案}
+  预处理过程
+  \begin{enumerate}
+    \item 解析列引用，将引用表达式替换为“表名.列名”的规范形式
+    \item 去除所有JOIN子句中的ON部分
+    \item 去除FROM子句中用于多对多关联的JOIN子句
+    \item 在FROM子句中，去除所有在SQL的其他部分引用过的表。若所有表都被去除，则去除整个FROM子句。
+  \end{enumerate}
+  后处理过程
+  \begin{enumerate}
+    \item 将所有在SQL中引用过的表添加到FROM子句中。
+    \item 根据外键关系，将数据库中的所有表构造成无向图，并使用Kruskal算法求解包含当前FROM子句中的表的最小生成树，根据生成树的边和节点来重建JOIN子句中的ON部分。
+  \end{enumerate}
+\end{frame}
+\begin{frame}
+  \frametitle{SQL预处理和后处理}
+  \framesubtitle{本文方案}
+  \begin{example}
+    \input{sql/before.tex}
+
+    转换为
+
+    \input{sql/after.tex}
+  \end{example}
+  \begin{itemize}
+    \item 解析别名\texttt{T2}，\texttt{T3}为真正的表名
+    \item \texttt{party\_host}是多对多关联表，\texttt{host}和\texttt{party}表均在SELECT子句中被引用过，所以整个FROM子句全部被去除。
+  \end{itemize}
 \end{frame}
 
 \subsection{上下文编码机制}
 \begin{frame}
   \frametitle{上下文编码机制}
+  EditSQL使用会话级别RNN编码上下文信息
+  \begin{figure}
+    \includegraphics[page=8,width=0.9\textwidth]{figure/figures.pdf}
+    \caption{EditSQL编码上下文方案}
+  \end{figure}
+\end{frame}
+\begin{frame}
+  \frametitle{上下文编码机制}
+  BERT等模型经过大规模无标注文本数据预训练，能更好地理解自然语言的上下文信息，如指代、省略等现象。
+  \begin{figure}
+    \includegraphics[page=9,width=0.9\textwidth]{figure/figures.pdf}
+    \caption{本文上下文编码机制}
+  \end{figure}
 \end{frame}
 
 \subsection{关系编码机制}
@@ -54,17 +121,75 @@
 \section{实验}
 \begin{frame}
   \frametitle{总体结果}
+  \begin{table}
+    \input{table/overall.tex}
+    \caption{SParC实验总体结果}
+  \end{table}
 \end{frame}
 \begin{frame}
   \frametitle{消融实验}
+  \begin{columns}
+    \column{0.4\textwidth}
+    \begin{itemize}
+      \item “无FROM”为EditSQL所用方案
+      \item “FROM未引用表”为本文最终采用方案
+    \end{itemize}
+    \column{0.6\textwidth}
+    \framesubtitle{SQL预处理和后处理}
+    \begin{figure}
+      \includegraphics[height=0.68\textheight]{figure/preprocess.pdf}
+      \caption{各种预处理方案对比}
+    \end{figure}
+  \end{columns}
+\end{frame}
+\begin{frame}
+  \frametitle{消融实验}
+  \framesubtitle{上下文编码 \& 关系编码机制}
+  \begin{table}
+    \input{table/ablation.tex}
+    \caption{消融实验结果}
+  \end{table}
+  \begin{block}{实验对比结果}
+    \begin{itemize}
+      \item 上下文编码机制虽然简单，但效果显著
+      \item 关系编码机制带来较小提升
+    \end{itemize}
+  \end{block}
 \end{frame}
 \begin{frame}
   \frametitle{错误分析}
+  \begin{columns}
+    \column{0.4\textwidth}
+    \begin{itemize}
+      \item 大多数错误出现在单个子查询内
+      \item 较高层次的查询骨架错误和较低层次的列选择错误都较多
+      \item 语法错误几乎没有
+    \end{itemize}
+    \column{0.6\textwidth}
+    \begin{figure}
+      \includegraphics[height=0.7\textheight]{figure/error.pdf}
+      \caption{预测错误分析}
+    \end{figure}
+  \end{columns}
 \end{frame}
 
 \section{结论}
 \begin{frame}
   \frametitle{结论}
+  \begin{block}{工作总结}
+    \begin{itemize}
+      \item 提出了三项简单的改进措施，并实验验证其有效
+      \item 融入最新预训练模型
+      \item 在SParC数据集，跨领域上下文相关的自然语言到SQL转换任务上，取得了新的最优准确率
+    \end{itemize}
+  \end{block}
+  \begin{block}{工作展望}
+    \begin{itemize}
+      \item 使用类似ORM系统的方式，继续改进预处理方案
+      \item 强化关系编码效果
+      \item 数据库自然语言接口系统的进一步研究与实现
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \end{document}
