@@ -31,12 +31,57 @@
 \section{背景}
 \begin{frame}
   \frametitle{数据库的自然语言接口}
+  日常生活中，人们每天都在和无数数据库打交道
+  \begin{figure}[]
+    \includegraphics[page=12]{figure/figures.pdf}
+    \caption{当前与数据库交互的方式}
+  \end{figure}
 \end{frame}
 \begin{frame}
+  \frametitle{数据库的自然语言接口}
+  \begin{figure}
+    \includegraphics[page=11]{figure/figures.pdf}
+    \caption{通过自然语言接口与数据库直接交互}
+  \end{figure}
+  \begin{block}{意义}
+    广大用户首次获得了直接面对大数据的能力
+  \end{block}
+\end{frame}
+
+\begin{frame}
   \frametitle{自然语言到SQL转换任务}
+  实现数据库的自然语言接口的方式之一：将自然语言转换为SQL
+  \begin{figure}
+    \includegraphics[page=13]{figure/figures.pdf}
+    \caption{通过自然语言到SQL转换与数据库交互}
+  \end{figure}
 \end{frame}
 \begin{frame}
   \frametitle{SParC数据集}
+  SParC数据集是跨领域的，上下文相关的自然语言到SQL转换任务数据集
+
+  \begin{columns}
+    \column{0.6\textwidth}
+    What are all the airlines?
+
+    \sql{\SELECT * \FROM AIRLINES}
+
+    \vspace{0.2cm}
+    Of these, which is Jetblue Airways?
+
+    \sql{\SELECT * \FROM AIRLINES \WHERE Airline = "JetBlue Airways"}
+
+    \vspace{0.2cm}
+    What is the country corresponding it?
+
+    \sql{\SELECT Country \FROM AIRLINES \WHERE Airline = "JetBlue Airways"}
+
+    \column{0.35\textwidth}
+    \begin{figure}
+      \includegraphics[width=\textwidth,trim=30 10 10 10,clip]{figure/schema_flight_2.pdf}
+      \caption{数据库架构}
+    \end{figure}
+  \end{columns}
 \end{frame}
 
 \section{提出的方法}
