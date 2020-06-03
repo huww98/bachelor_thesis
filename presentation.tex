@@ -3,6 +3,18 @@
 \setmainfont{Times New Roman}
 \setCJKsansfont{宋体}
 
+% workaround https://github.com/josephwright/beamer/issues/337
+\makeatletter
+\def\beamer@framenotesbegin{% at beginning of slide
+  \usebeamercolor[fg]{normal text}
+  \gdef\beamer@noteitems{}%
+  \gdef\beamer@notes{}%
+}
+\makeatother
+
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen}
+
 \title[数据库的自然语言接口]{数据库的自然语言接口关键技术研究}
 \author{胡玮文}
 \institute[SCUT]{华南理工大学}
@@ -19,6 +31,14 @@
 
 \begin{document}
 \frame{\titlepage}
+\note{
+  \begin{itemize}
+    \item 大家好
+    \item 自我介绍
+    \item 题目
+  \end{itemize}
+  Time: 00:18
+}
 \logo{}
 
 \input{sql/def.tex}
@@ -26,16 +46,29 @@
 \begin{frame}
   \frametitle{目录}
   \tableofcontents
+
+  \note{Time: 00:25}
 \end{frame}
 
 \section{背景}
 \begin{frame}
   \frametitle{数据库的自然语言接口}
   日常生活中，人们每天都在和无数数据库打交道
+  \note{
+    \begin{itemize}
+      \item 生活中很多信息系统，数据库
+      \item 普通用户很少与数据库直接交互，需要专业，SQL，但普通用户不具有这样的专业能力
+    \end{itemize}
+  }
   \begin{figure}[]
     \includegraphics[page=12]{figure/figures.pdf}
     \caption{当前与数据库交互的方式}
   \end{figure}
+  \note{
+    普通用户通过用户界面与数据库交互
+
+    Time: 01:00
+  }
 \end{frame}
 \begin{frame}
   \frametitle{数据库的自然语言接口}
@@ -45,21 +78,44 @@
   \end{figure}
   \begin{block}{意义}
     广大用户首次获得了直接面对大数据的能力
+    \note{
+      大数据时代，数据产生快，分析数据水平不够。帮助用户获取分析任何信息，探索。\par
+    }
   \end{block}
+  \note{
+    如何实现？（过渡）
+
+    Time: 01:25
+  }
 \end{frame}
 
 \begin{frame}
   \frametitle{自然语言到SQL转换任务}
   实现数据库的自然语言接口的方式之一：将自然语言转换为SQL
+  \note{方法之一。所有现有数据库都能获得自然语言接口的能力。\par}
   \begin{figure}
     \includegraphics[page=13]{figure/figures.pdf}
     \caption{通过自然语言到SQL转换与数据库交互}
   \end{figure}
+  \note{目标：构建一个这样的转换器\par}
+  \note{
+    过渡：为了实现这个目标，之前也有不少努力。
+
+    Time: 01:45
+  }
 \end{frame}
 \begin{frame}
   \frametitle{SParC数据集}
   SParC数据集是跨领域的，上下文相关的自然语言到SQL转换任务数据集
-
+  \note{
+    \begin{itemize}
+      \item 内容包括数据库架构，以及多轮与数据库的交互
+      \item 每轮交互包括一个自然语言的查询和对应的SQL语句
+      \item 目标：构建转换器，输入：数据库架构，自然语言查询。输出：对应SQL语句
+      \item 介绍跨领域
+      \item 介绍上下文相关
+    \end{itemize}
+  }
   \begin{columns}
     \column{0.6\textwidth}
     What are all the airlines?
@@ -91,6 +147,8 @@
     \includegraphics[page=6,width=\linewidth]{figure/figures.pdf}
     \caption{模型整体架构}
   \end{figure}
+  \note{主要：编码器、解码器\par}
+  \note{过渡：后面主要介绍本研究中的改进内容}
 \end{frame}
 
 \subsection{SQL预处理和后处理}
@@ -98,19 +156,26 @@
   \frametitle{SQL预处理和后处理}
   \begin{itemize}
     \item SQL中包含冗余的，抽象层次低的结构，将显著影响模型预测的准确率
-    \item EditSQL的方案为去除SQL中最为冗余的FROM子句
+    \item EditSQL的方案为去除SQL中最为冗余的FROM子句，但并非所有FROM的内容都是冗余的。17.3\%的SQL无法还原
   \end{itemize}
-  \begin{example}
-    Who are all the party hosts?…\\
-    Show the themes of parties they host along with their name.
+  \begin{example}[去掉FROM子句后将丢失信息]
+    Which students have pets?
 
     \vspace{0.2cm}
-    \input{sql/before.tex}
+    \sql{\SELECT \DISTINCT T1.fname \\
+      \SQLINDENT\FROM student \AS T1 \\
+      \SQLINDENT\JOIN has\_pet \AS T2 \ON T1.stuid = T2.stuid}
+
+    转换为
+
+    \sql{\SELECT \DISTINCT student.fname}
   \end{example}
 \end{frame}
 \begin{frame}
   \frametitle{SQL预处理和后处理}
   \framesubtitle{本文方案}
+  更细粒度地处理FROM子句，保留必要的信息。仅2.3\%的SQL无法还原
+
   预处理过程
   \begin{enumerate}
     \item 解析列引用，将引用表达式替换为“表名.列名”的规范形式
@@ -165,6 +230,7 @@
   \begin{itemize}
     \item 数据库架构中包含有主键，外键等信息。这些信息被以往的很多方法忽略
     \item 本文将数据库架构的编码结合进预训练注意力机制中
+      \note{编码有向图}
   \end{itemize}
 
   \begin{figure}
@@ -196,6 +262,11 @@
       \caption{各种预处理方案对比}
     \end{figure}
   \end{columns}
+  \note{
+    EditSQL的方案虽然会导致信息丢失，但依然是有助提升性能的。
+
+    要预测的冗余的信息越多，准确率越低
+  }
 \end{frame}
 \begin{frame}
   \frametitle{消融实验}
@@ -210,6 +281,13 @@
       \item 关系编码机制带来较小提升
     \end{itemize}
   \end{block}
+  \note{
+    关系编码提升小，可能原因：
+    \begin{itemize}
+      \item 预训练模型能从内容中较好理解关系，编码仅是锦上添花
+      \item 编码未能良好融入预训练模型后
+    \end{itemize}
+  }
 \end{frame}
 \begin{frame}
   \frametitle{错误分析}
@@ -217,6 +295,7 @@
     \column{0.4\textwidth}
     \begin{itemize}
       \item 大多数错误出现在单个子查询内
+        \note{大多查询不包括子查询和组合结构。其预测准确率也很低}
       \item 较高层次的查询骨架错误和较低层次的列选择错误都较多
       \item 语法错误几乎没有
     \end{itemize}
@@ -234,15 +313,17 @@
   \begin{block}{工作总结}
     \begin{itemize}
       \item 提出了三项简单的改进措施，并实验验证其有效
-      \item 融入最新预训练模型
+      \item 融入最新预训练模型XLNet，进一步提升结果
       \item 在SParC数据集，跨领域上下文相关的自然语言到SQL转换任务上，取得了新的最优准确率
     \end{itemize}
   \end{block}
   \begin{block}{工作展望}
     \begin{itemize}
       \item 使用类似ORM系统的方式，继续改进预处理方案
+        \note[item]{设计更适合机器学习预测的，能确定性转换为SQL的查询语言}
       \item 强化关系编码效果，并可应用于其他领域
       \item 数据库自然语言接口系统的进一步研究与实现
+        \note[item]{准确率不足以在实际工程项目中}
     \end{itemize}
   \end{block}
 \end{frame}

@@ -1,3 +1,3 @@
 \sql{\SELECT T3.Party\_Theme, T2.Name \FROM party\_host \AS T1 \newline
-    \-\hspace{2em} \JOIN host \AS T2 \ON T1.Host\_ID = T2.Host\_ID \newline
-    \-\hspace{2em} \JOIN party \AS T3 \ON T1.Party\_ID = T3.Party\_ID}
+    \SQLINDENT\JOIN host \AS T2 \ON T1.Host\_ID = T2.Host\_ID \newline
+    \SQLINDENT\JOIN party \AS T3 \ON T1.Party\_ID = T3.Party\_ID}

@@ -7,3 +7,12 @@
 \def\AS{\kw{AS }}
 \def\ON{\kw{ON }}
 \def\AND{\kw{AND }}
+\def\GROUPBY{\kw{GROUP~BY }}
+\def\ORDERBY{\kw{ORDER~BY }}
+\def\LIMIT{\kw{LIMIT }}
+\def\DESC{\kw{DESC }}
+\def\DISTINCT{\kw{DISTINCT }}
+
+\newlength{\sqlindentwidth}
+\settowidth{\sqlindentwidth}{\sql{aaaa}}
+\def\SQLINDENT{\-\hspace{\sqlindentwidth}}
