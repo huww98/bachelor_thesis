@@ -13,6 +13,7 @@
 \makeatother
 
 \usepackage{pgfpages}
+% \setbeameroption{show notes}
 \setbeameroption{show notes on second screen}
 
 \title[数据库的自然语言接口]{数据库的自然语言接口关键技术研究}
@@ -54,12 +55,12 @@
 \begin{frame}
   \frametitle{数据库的自然语言接口}
   日常生活中，人们每天都在和无数数据库打交道
-  \note{
-    \begin{itemize}
-      \item 生活中很多信息系统，数据库
-      \item 普通用户很少与数据库直接交互，需要专业，SQL，但普通用户不具有这样的专业能力
-    \end{itemize}
-  }
+  % \note{
+  %   \begin{itemize}
+  %     \item 生活中很多信息系统，数据库
+  %     \item 普通用户很少与数据库直接交互，需要专业，SQL，但普通用户不具有这样的专业能力
+  %   \end{itemize}
+  % }
   \begin{figure}[]
     \includegraphics[page=12]{figure/figures.pdf}
     \caption{当前与数据库交互的方式}
@@ -109,11 +110,12 @@
   SParC数据集是跨领域的，上下文相关的自然语言到SQL转换任务数据集
   \note{
     \begin{itemize}
-      \item 内容包括数据库架构，以及多轮与数据库的交互
+      \item 内容包括200数据库架构，训练和推理时不重叠
+      \item 以及多轮与数据库的交互
       \item 每轮交互包括一个自然语言的查询和对应的SQL语句
       \item 目标：构建转换器，输入：数据库架构，自然语言查询。输出：对应SQL语句
-      \item 介绍跨领域
-      \item 介绍上下文相关
+      % \item 介绍跨领域
+      % \item 介绍上下文相关
     \end{itemize}
   }
   \begin{columns}
@@ -138,6 +140,9 @@
       \caption{数据库架构}
     \end{figure}
   \end{columns}
+  \note{
+    Time: 02:30
+  }
 \end{frame}
 
 \section{提出的方法}
@@ -147,8 +152,12 @@
     \includegraphics[page=6,width=\linewidth]{figure/figures.pdf}
     \caption{模型整体架构}
   \end{figure}
-  \note{主要：编码器、解码器\par}
-  \note{过渡：后面主要介绍本研究中的改进内容}
+  \note{基于EditSQL，主要：编码器、解码器。属于Seq2Seq\par}
+  \note{
+    过渡：后面主要介绍本研究中的改进内容
+
+    Time: 02:50
+  }
 \end{frame}
 
 \subsection{SQL预处理和后处理}
@@ -170,6 +179,7 @@
 
     \sql{\SELECT \DISTINCT student.fname}
   \end{example}
+  \note{Time: 03:50}
 \end{frame}
 \begin{frame}
   \frametitle{SQL预处理和后处理}
@@ -189,6 +199,7 @@
     \item 根据外键关系，将数据库中的所有表构造成无向图，并使用Kruskal算法求解包含当前FROM子句中的表的最小生成树，根据生成树的边和节点来重建JOIN子句中的ON部分。
     \item 有多张表时，恢复别名
   \end{enumerate}
+  \note{Time: 4:10}
 \end{frame}
 \begin{frame}
   \frametitle{SQL预处理和后处理}
@@ -204,6 +215,11 @@
     \item 解析别名\texttt{T2}，\texttt{T3}为真正的表名
     \item \texttt{party\_host}是多对多关联表，\texttt{host}和\texttt{party}表均在SELECT子句中被引用过，所以整个FROM子句全部被去除。
   \end{itemize}
+  \note{
+    虽然结果也是去除了整个FROM子句，但其过程更加细致。可以避免上个例子中信息丢失的情况。
+
+    Time: 4:40
+  }
 \end{frame}
 
 \subsection{上下文编码机制}
@@ -214,6 +230,7 @@
     \includegraphics[page=8,width=0.9\textwidth]{figure/figures.pdf}
     \caption{EditSQL编码上下文方案}
   \end{figure}
+  \note{Time: 4:55}
 \end{frame}
 \begin{frame}
   \frametitle{上下文编码机制}
@@ -222,6 +239,11 @@
     \includegraphics[page=9,width=0.9\textwidth]{figure/figures.pdf}
     \caption{本文上下文编码机制}
   \end{figure}
+  \note{
+    因此，直接串联自然语言查询的上下文，更好地理解
+
+    Time: 5:15
+  }
 \end{frame}
 
 \subsection{关系编码机制}
@@ -230,13 +252,18 @@
   \begin{itemize}
     \item 数据库架构中包含有主键，外键等信息。这些信息被以往的很多方法忽略
     \item 本文将数据库架构的编码结合进预训练注意力机制中
-      \note{编码有向图}
+      \note{编码有向图\par}
   \end{itemize}
 
   \begin{figure}
     \includegraphics[page=10,width=\textwidth]{figure/figures.pdf}
     \caption{关系编码机制示意\footnote{为了展示简洁，标点符号对应的表示已省略，它们全部使用“其他”关系。此处仅展示了部分关系类型。}}
   \end{figure}
+  \note{
+    以此帮助模型更好地理解结构化的数据库架构
+
+    Time: 5:45
+  }
 \end{frame}
 
 \section{实验}
@@ -246,6 +273,7 @@
     \input{table/overall.tex}
     \caption{SParC实验总体结果}
   \end{table}
+  \note{Time: 6:05}
 \end{frame}
 \begin{frame}
   \frametitle{消融实验}
@@ -265,7 +293,9 @@
   \note{
     EditSQL的方案虽然会导致信息丢失，但依然是有助提升性能的。
 
-    要预测的冗余的信息越多，准确率越低
+    右边4个：由此判断要预测的冗余的信息越多，准确率越低。消除冗余是有效提升准确率的方法
+
+    Time: 7:05
   }
 \end{frame}
 \begin{frame}
@@ -282,11 +312,12 @@
     \end{itemize}
   \end{block}
   \note{
-    关系编码提升小，可能原因：
-    \begin{itemize}
-      \item 预训练模型能从内容中较好理解关系，编码仅是锦上添花
-      \item 编码未能良好融入预训练模型后
-    \end{itemize}
+    % 关系编码提升小，可能原因：
+    % \begin{itemize}
+    %   \item 预训练模型能从内容中较好理解关系，编码仅是锦上添花
+    %   \item 编码未能良好融入预训练模型后
+    % \end{itemize}
+    Time: 7:15
   }
 \end{frame}
 \begin{frame}
@@ -295,7 +326,7 @@
     \column{0.4\textwidth}
     \begin{itemize}
       \item 大多数错误出现在单个子查询内
-        \note{大多查询不包括子查询和组合结构。其预测准确率也很低}
+        \note{大多查询不包括子查询和组合结构。其预测准确率也很低\par}
       \item 较高层次的查询骨架错误和较低层次的列选择错误都较多
       \item 语法错误几乎没有
     \end{itemize}
@@ -305,6 +336,7 @@
       \caption{预测错误分析}
     \end{figure}
   \end{columns}
+  \note{Time: 7:35}
 \end{frame}
 
 \section{结论}
@@ -326,6 +358,7 @@
         \note[item]{准确率不足以在实际工程项目中}
     \end{itemize}
   \end{block}
+  \note{Time: 08:00}
 \end{frame}
 
 \end{document}
